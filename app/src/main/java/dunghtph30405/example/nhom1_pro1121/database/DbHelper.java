@@ -22,10 +22,10 @@ public class  DbHelper extends SQLiteOpenHelper {
         db.execSQL(account);
 
         db.execSQL("INSERT INTO ACCOUNT (hoten, matkhau, email, loaitaikhoan, sodienthoai) VALUES " +
-                "('admin', 'admin', 'admin@gmail.com', 'admin','0101010101')," +
+                "('admin', 'admin', 'admin@gmail.com', 'admin', '0101010101')," +
                 "('user1', 'user1', 'user1@gmail.com', 'user','0202020202')," +
-                "('hoangdung59', 'hoangdung59', 'hoangdung59@gmail.com', 'user', '097421690')," +
-                "('ngocdang2', 'ngocdang2', 'ngocdang2@gmail.com', 'user','0303030303')");
+                "('hoangdung59', 'hoangdung59', 'hoangdung59@gmail.com', 'user','0303030303')," +
+                "('ngocdang2', 'ngocdang2', 'ngocdang2@gmail.com', 'user', '0404040404')");
 
 
         String sanpham_home = "CREATE TABLE SANPHAM(masp INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -194,5 +194,4 @@ public class  DbHelper extends SQLiteOpenHelper {
         db.delete("GIOHANG", null, null);
     }
 }
-
 
