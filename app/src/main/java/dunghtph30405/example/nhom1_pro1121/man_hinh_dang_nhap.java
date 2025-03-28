@@ -13,14 +13,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import dunghtph30405.example.nhom1_pro1121.dao.AccountDAO;
+import dunghtph30405.example.nhom1_pro1121.designPantter.AccountSingle;
 import dunghtph30405.example.nhom1_pro1121.util.SendMail;
 
 public class man_hinh_dang_nhap extends AppCompatActivity {
@@ -62,7 +59,7 @@ public class man_hinh_dang_nhap extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String user = edt_user.getText().toString().trim();
-                String pass = edt_pass.getText().toString();
+                String pass = edt_pass.getText().toString().trim();
                 int selectedId = radioGroup.getCheckedRadioButtonId();
 
                 if (selectedId == -1) {
@@ -71,26 +68,27 @@ public class man_hinh_dang_nhap extends AppCompatActivity {
                 }
 
                 RadioButton selectedRadioButton = findViewById(selectedId);
-                String role = selectedRadioButton.getText().toString();
+                String selectedRole = selectedRadioButton.getText().toString().equals("User") ? "user" : "admin";
 
                 if (user.isEmpty() || pass.isEmpty()) {
                     Toast.makeText(man_hinh_dang_nhap.this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                 } else {
                     if (accountDAO.checkdn(user, pass)) {
-                        if (chk_remember.isChecked()) {
-                            editor.putString("email", user);
-                            editor.putString("matkhau", pass);
-                            editor.putBoolean("remember_me", true);
-                            editor.apply();
-                        } else {
-                            editor.clear();
-                            editor.apply();
-                        }
-
-                        if (role.equals("User")) {
+                        String dbRole = AccountSingle.getInstance().getAccount().getLoaitaikhoan();
+                        if (dbRole != null && dbRole.equals(selectedRole)) {
+                            if (chk_remember.isChecked()) {
+                                editor.putString("email", user);
+                                editor.putString("matkhau", pass);
+                                editor.putBoolean("remember_me", true);
+                                editor.apply();
+                            } else {
+                                editor.clear();
+                                editor.apply();
+                            }
                             startActivity(new Intent(man_hinh_dang_nhap.this, MainActivity.class));
+                            finish();
                         } else {
-                            startActivity(new Intent(man_hinh_dang_nhap.this, MainActivity.class));
+                            Toast.makeText(man_hinh_dang_nhap.this, "Vai trò không khớp với tài khoản", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(man_hinh_dang_nhap.this, "Tài khoản hoặc mật khẩu sai", Toast.LENGTH_SHORT).show();
@@ -139,7 +137,7 @@ public class man_hinh_dang_nhap extends AppCompatActivity {
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = edt_email.getText().toString();
+                String email = edt_email.getText().toString().trim();
                 String matkhau = accountDAO.fogotpass(email);
 
                 if (matkhau.isEmpty()) {

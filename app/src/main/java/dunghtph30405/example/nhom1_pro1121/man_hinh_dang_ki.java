@@ -70,7 +70,7 @@ public class man_hinh_dang_ki extends AppCompatActivity {
 
                 if (!validate_matkhau(pass)) {
                     Toast.makeText(man_hinh_dang_ki.this, "Mật khẩu cần ít nhất 8 ký tự, và có ít nhất một kí tự viết hoa và một kí tự viết thường.", Toast.LENGTH_SHORT).show();
-                    return; // Không gọi đăng ký nếu mật khẩu không hợp lệ
+                    return;
                 }
                 if (hoten.length() < 8) {
                     Toast.makeText(man_hinh_dang_ki.this, "Name cần ít nhất 8 kí tự !", Toast.LENGTH_SHORT).show();
@@ -95,7 +95,6 @@ public class man_hinh_dang_ki extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     private boolean validate_matkhau(String matkhau) {
