@@ -13,13 +13,19 @@
         android:theme="@style/Theme.Nhom1_PRO1121"
         tools:targetApi="31">
         <activity
+            android:name=".man_hinh_chao"
+            android:exported="false" />
+        <activity
+            android:name=".man_hinh_dang_ki"
+            android:exported="false" />
+        <activity
             android:name=".man_hinh_dang_nhap"
             android:exported="false" />
         <activity
-            android:name=".Welcome"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Welcome"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

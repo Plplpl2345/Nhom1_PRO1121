@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "dunghtph30405.example.nhom1_pro1121"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "dunghtph30405.example.nhom1_pro1121"
@@ -40,4 +40,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+
+    implementation ("me.relex:circleindicator:2.1.6")
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+    implementation ("androidx.recyclerview:recyclerview:1.3.2")
+    implementation ("com.sun.mail:javax.mail:1.6.2")
 }

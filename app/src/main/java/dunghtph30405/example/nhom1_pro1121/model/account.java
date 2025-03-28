@@ -5,6 +5,7 @@ public class account {
     private String matkhau;
     private String email;
     private String loaitaikhoan;
+    private String sodienthoai;
 
 
     public account() {
@@ -18,12 +19,13 @@ public class account {
         this.email = email;
     }
 
-    public account(int id, String hoten, String matkhau, String email, String loaitaikhoan) {
+    public account(int id, String hoten, String matkhau, String email, String loaitaikhoan, String sodienthoai) {
         this.id = id;
         this.hoten = hoten;
         this.matkhau = matkhau;
         this.email = email;
         this.loaitaikhoan = loaitaikhoan;
+        this.sodienthoai = sodienthoai;
     }
 
     public int getId() {
@@ -57,6 +59,14 @@ public class account {
 
     public void setLoaitaikhoan(String loaitaikhoan) {
         this.loaitaikhoan = loaitaikhoan;
+    }
+
+    public String getSodienthoai() {
+        return sodienthoai;
+    }
+
+    public void setSodienthoai(String sodienthoai) {
+        this.sodienthoai = sodienthoai;
     }
 
 }
