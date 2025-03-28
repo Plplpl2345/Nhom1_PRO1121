@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Nhom1_PRO1121</string>
+    <string name="sign_up">Don\'t have an account? <b>Sign up</b></string>
+    <string name="quenmk"><u>forgot password?</u></string>
+    <string name="back">Do you already have an account? <b>Sign in</b></string>
+
 </resources>

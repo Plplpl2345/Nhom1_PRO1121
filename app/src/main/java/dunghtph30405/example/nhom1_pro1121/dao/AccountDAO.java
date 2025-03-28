@@ -35,9 +35,11 @@ public class AccountDAO {
                         cursor.getString(1),
                         cursor.getString(2),
                         cursor.getString(3),
-                        cursor.getString(4)));
+                        cursor.getString(4),
+                        cursor.getString(5)));
             } while (cursor.moveToNext());
         }
+        cursor.close();
         return list;
     }
 
@@ -56,14 +58,17 @@ public class AccountDAO {
                     cursor.getString(1),
                     cursor.getString(2),
                     cursor.getString(3),
-                    cursor.getString(4)));
+                    cursor.getString(4),
+                    cursor.getString(5)));
+            cursor.close();
             return true;
         } else {
+            cursor.close();
             return false;
         }
     }
 
-    // Signup method updated to include account type
+    // Signup method updated to include correct column name
     public boolean signup(String hoten, String matkhau, String email, String role) {
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
         Cursor cursor = sqLiteDatabase.query("ACCOUNT", null, "email = ?",
@@ -77,19 +82,20 @@ public class AccountDAO {
         contentValues.put("hoten", hoten);
         contentValues.put("matkhau", matkhau);
         contentValues.put("email", email);
-        contentValues.put("role", role); // Add this line
+        contentValues.put("loaitaikhoan", role); // Sửa từ "role" thành "loaitaikhoan"
+        contentValues.put("sodienthoai", ""); // Thêm giá trị mặc định cho cột sodienthoai
         try {
             long check = sqLiteDatabase.insertOrThrow("ACCOUNT", null, contentValues);
             dbHelper.resetLocalData();
-            return check != -1;
-        } catch (SQLiteConstraintException e) {
-            return false;
-        } finally {
             cursor.close();
             sqLiteDatabase.close();
+            return check != -1;
+        } catch (SQLiteConstraintException e) {
+            cursor.close();
+            sqLiteDatabase.close();
+            return false;
         }
     }
-
 
     // Forgot password
     public String fogotpass(String email) {
@@ -97,8 +103,11 @@ public class AccountDAO {
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT matkhau FROM ACCOUNT WHERE email = ? ", new String[]{email});
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            return cursor.getString(0);
+            String matkhau = cursor.getString(0);
+            cursor.close();
+            return matkhau;
         }
+        cursor.close();
         return "";
     }
 
@@ -111,12 +120,13 @@ public class AccountDAO {
             ContentValues contentValues = new ContentValues();
             contentValues.put("matkhau", matkhauMoi);
             long check = sqLiteDatabase.update("ACCOUNT", contentValues, "email = ?", new String[]{email});
+            cursor.close();
             if (check == -1) {
                 return false;
             }
             return true;
         }
+        cursor.close();
         return false;
     }
 }
-
