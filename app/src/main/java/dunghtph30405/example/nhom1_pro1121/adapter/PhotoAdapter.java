@@ -1,4 +1,4 @@
-package dunghtph30405.example.nhom1_pro1121;
+package dunghtph30405.example.nhom1_pro1121.adapter;
 
 
 import android.content.Context;
@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import dunghtph30405.example.nhom1_pro1121.R;
 import dunghtph30405.example.nhom1_pro1121.model.photo;
 
 
