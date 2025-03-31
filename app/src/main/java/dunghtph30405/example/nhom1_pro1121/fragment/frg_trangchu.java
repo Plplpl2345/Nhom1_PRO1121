@@ -15,7 +15,7 @@ import androidx.viewpager.widget.ViewPager;
 import java.util.ArrayList;
 import java.util.List;
 
-import dunghtph30405.example.nhom1_pro1121.PhotoAdapter;
+import dunghtph30405.example.nhom1_pro1121.adapter.PhotoAdapter;
 import dunghtph30405.example.nhom1_pro1121.R;
 import dunghtph30405.example.nhom1_pro1121.adapter.SanphamAdapter;
 import dunghtph30405.example.nhom1_pro1121.dao.GioHangDAO;
