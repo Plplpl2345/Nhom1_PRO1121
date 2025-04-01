@@ -1,7 +1,6 @@
 package dunghtph30405.example.nhom1_pro1121.adapter;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
@@ -13,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.w3c.dom.Text;
@@ -24,17 +24,19 @@ import dunghtph30405.example.nhom1_pro1121.dao.SanPhamDAO;
 import dunghtph30405.example.nhom1_pro1121.model.sanpham;
 import dunghtph30405.example.nhom1_pro1121.util.Amount;
 
-public class QuanLySanPhamAdapter extends RecyclerView.Adapter<QuanLySanPhamAdapter.ViewHolder> {
+public class QuanLyGamingAdapter extends RecyclerView.Adapter<QuanLyGamingAdapter.ViewHolder> {
     private Context context;
     private ArrayList<sanpham> list;
-
+    private ArrayList<sanpham> fullList;
     private SanPhamDAO sanPhamDAO;
 
-    public QuanLySanPhamAdapter(Context context, ArrayList<sanpham> list, SanPhamDAO sanPhamDAO) {
+    public QuanLyGamingAdapter(Context context, ArrayList<sanpham> list, SanPhamDAO sanPhamDAO) {
         this.context = context;
         this.list = list;
+        this.fullList = new ArrayList<>(list);  // Create a full copy of the original list
         this.sanPhamDAO = sanPhamDAO;
     }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -45,33 +47,31 @@ public class QuanLySanPhamAdapter extends RecyclerView.Adapter<QuanLySanPhamAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.txt_tensp.setText(list.get(position).getTensp());
-        holder.txt_gia.setText("Giá: " + Amount.moneyFormat( list.get(position).getGia()));
+        sanpham product = list.get(position);
+        holder.txt_tensp.setText(product.getTensp());
+        holder.txt_gia.setText("Giá: " + Amount.moneyFormat(product.getGia()));
+
         holder.txt_xemthem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showdialogXemThem(list.get(holder.getAdapterPosition()));
+                showdialogXemThem(product);
             }
         });
 
         holder.btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context); //tạo dối tượng
-                builder.setIcon(R.drawable.canhbao); //set icon
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setIcon(R.drawable.canhbao);
                 builder.setMessage("Bạn chắc chắn muốn xóa");
-
-
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-                        //
-                        boolean check = sanPhamDAO.deleteSP(list.get(holder.getAdapterPosition()).getMasp());
-                        if (check){
+                        boolean check = sanPhamDAO.deleteGAM(product.getMasp());
+                        if (check) {
                             loadData();
                             Toast.makeText(context, "Xóa thành công", Toast.LENGTH_SHORT).show();
-                        }else {
+                        } else {
                             Toast.makeText(context, "Xóa thất bại", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -82,7 +82,7 @@ public class QuanLySanPhamAdapter extends RecyclerView.Adapter<QuanLySanPhamAdap
                         Toast.makeText(context, "Không xóa", Toast.LENGTH_SHORT).show();
                     }
                 });
-                android.app.AlertDialog dialog = builder.create(); //tạo hộp thoại
+                AlertDialog dialog = builder.create();
                 dialog.show();
             }
         });
@@ -90,7 +90,7 @@ public class QuanLySanPhamAdapter extends RecyclerView.Adapter<QuanLySanPhamAdap
         holder.btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialogUpdate(list.get(holder.getAdapterPosition()));
+                dialogUpdate(product);
             }
         });
     }
@@ -100,24 +100,51 @@ public class QuanLySanPhamAdapter extends RecyclerView.Adapter<QuanLySanPhamAdap
         return list.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView txt_tensp, txt_gia, txt_xemthem;
-        Button btn_delete , btn_update;
+    public void filterList(String query) {
+        query = query.toLowerCase();
+        list.clear();
 
+        if (query.isEmpty()) {
+            list.addAll(fullList);  // Sử dụng fullList để lấy tất cả các sản phẩm
+        } else {
+            for (sanpham sp : fullList) {
+                if (sp.getTensp().toLowerCase().contains(query)) {
+                    list.add(sp);
+                }
+            }
+        }
+        notifyDataSetChanged();  // Cập nhật lại giao diện người dùng
+    }
+
+
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView txt_tensp, txt_gia, txt_xemthem;
+        Button btn_delete, btn_update;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             txt_tensp = itemView.findViewById(R.id.txt_tensp_home_ql);
             txt_gia = itemView.findViewById(R.id.txt_giasp_home_ql);
             txt_xemthem = itemView.findViewById(R.id.txt_xemthem_home_ql);
-
             btn_delete = itemView.findViewById(R.id.btn_deletesp_ql);
             btn_update = itemView.findViewById(R.id.btn_updatesp_ql);
         }
     }
+
+    // Your dialog methods here...
+
+    public void loadData() {
+        list.clear();
+        list.addAll(sanPhamDAO.selectGAMING());  // Lấy danh sách sản phẩm mới từ cơ sở dữ liệu
+        fullList = new ArrayList<>(list);  // Cập nhật fullList
+        notifyDataSetChanged();
+    }
+
+
+
     private void showdialogXemThem(sanpham sanPham){
-        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater layoutInflater = ((Activity)context).getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.item_chitiet_sanpham, null);
         builder.setView(view);
@@ -160,6 +187,7 @@ public class QuanLySanPhamAdapter extends RecyclerView.Adapter<QuanLySanPhamAdap
         tocdoCPU_chitiet.setText("Tốc độ: " + sanPham.getTocdocpu());
         txt_vantay_chitiet.setText("Vân tay: " + sanPham.getVantay());
 
+
         builder.setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -167,14 +195,13 @@ public class QuanLySanPhamAdapter extends RecyclerView.Adapter<QuanLySanPhamAdap
             }
         });
 
-        androidx.appcompat.app.AlertDialog alertDialog = builder.create();
+        AlertDialog alertDialog = builder.create();
         alertDialog.show();
 
     }
 
-    //update
     public void dialogUpdate(sanpham sp){
-        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater layoutInflater = ((Activity)context).getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.item_update_sanpham, null);
         builder.setView(view);
@@ -247,7 +274,7 @@ public class QuanLySanPhamAdapter extends RecyclerView.Adapter<QuanLySanPhamAdap
 
                 }else {
 
-                    boolean check = sanPhamDAO.updateSP(masp, tensp_ud,giasp_ud,thuonghieu_ud, xuatxu_ud, kichthuocmanhinh_ud, mausac_ud, trongluong_ud, chatlieu_ud, cpu_ud,ocung_ud,ram_ud, rom_ud,card_ud, tocdocpu_ud,congusb_ud,vantay_ud );
+                    boolean check = sanPhamDAO.updateGAM(masp, tensp_ud,giasp_ud,thuonghieu_ud, xuatxu_ud, kichthuocmanhinh_ud, mausac_ud, trongluong_ud, chatlieu_ud, cpu_ud,ocung_ud,ram_ud, rom_ud,card_ud, tocdocpu_ud,congusb_ud,vantay_ud );
                     if (check){
                         Toast.makeText(context, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                         loadData();
@@ -269,13 +296,8 @@ public class QuanLySanPhamAdapter extends RecyclerView.Adapter<QuanLySanPhamAdap
             }
         });
 
-        androidx.appcompat.app.AlertDialog alertDialog = builder.create();
+        AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
 
-    public void loadData(){
-        list.clear();
-        list = sanPhamDAO.selectSANPHAM();
-        notifyDataSetChanged();
-    }
 }
