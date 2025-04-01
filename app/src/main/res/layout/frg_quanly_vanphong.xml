@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.frg_quanly_sanpham_home">
+    tools:context=".fragment.frg_quanly_vanphong">
+
+
 
     <LinearLayout
         android:padding="10dp"
@@ -13,7 +15,7 @@
 
         <androidx.appcompat.widget.SearchView
             android:background="@drawable/customsearch"
-            android:id="@+id/search_quanly_sp"
+            android:id="@+id/search_quanly_vanPhong"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -27,12 +29,12 @@
 
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView_quanli_sp"
+                android:id="@+id/recyclerView_quanli_vanPhong"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/float_add_sp"
+                android:id="@+id/float_add_vanPhong"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -51,5 +53,7 @@
     </LinearLayout>
 
 
-</FrameLayout>
 
+
+
+</FrameLayout>
