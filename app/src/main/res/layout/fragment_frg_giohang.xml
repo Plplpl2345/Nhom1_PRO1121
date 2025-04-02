@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".frg.frg_giohang">
+    tools:context=".fragment.frg_giohang">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
