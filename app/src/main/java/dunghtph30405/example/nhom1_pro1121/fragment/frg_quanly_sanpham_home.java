@@ -49,7 +49,7 @@ public class frg_quanly_sanpham_home extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.  1frg_quanly_sanpham_home, container, false);
+        View view = inflater.inflate(R.layout.frg_quanly_sanpham_home, container, false);
 
         FloatingActionButton float_add_sp = view.findViewById(R.id.float_add_sp);
 
