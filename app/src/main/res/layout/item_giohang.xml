@@ -75,7 +75,6 @@
                 android:textStyle="bold"
                 android:paddingLeft="38dp"
                 android:id="@+id/txt_giaTiengh"/>
-
             <Button
                 android:id="@+id/btn_muahang_gh"
                 android:layout_width="match_parent"
@@ -84,11 +83,6 @@
                 android:layout_margin="10dp"
                 android:backgroundTint="#E88364"
                 android:text="Mua Ngay"/>
-
-
-
-
-
         </LinearLayout>
 
     </LinearLayout>

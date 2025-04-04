@@ -16,12 +16,12 @@
         <ImageView
             android:layout_width="220dp"
             android:layout_height="220dp"
-            android:src="@drawable/img_3"/>
+            android:src="@drawable/img_4"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Vui lòng thanh toán để chúng tôi xác nhận đơn hàng"
+            android:text="Vui lòng thanh toán \nđể chúng tôi xác nhận đơn hàng"
             android:gravity="center"
             android:textSize="23dp"
             android:layout_marginTop="20dp"

@@ -45,6 +45,7 @@ public class  DbHelper extends SQLiteOpenHelper {
                 "tocdocpu TEXT, " +
                 "congusb TEXT, " +
                 "vantay TEXT  )";
+
         db.execSQL(sanpham_home);
 
         db.execSQL("INSERT INTO SANPHAM VALUES (1,'Acer Nitro 5',15900000, 'Acer', 'Trung Quốc', '15.6 inch', 'Đen', '2.5 kg', 'Nhựa', 'Intel i5 11400H', 'SSD', '8GB', '256GB', 'RTX 3050', '2.7GHz', '3 cổng', 'Không')," +
