@@ -235,20 +235,8 @@
                     android:layout_height="wrap_content"
                     android:text="Vân tay"
                     android:textSize="15dp" />
-
-
-
             </LinearLayout>
-
-
-
         </LinearLayout>
-
-
-
-
-
-
 
     </LinearLayout>
 
