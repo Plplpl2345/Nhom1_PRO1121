@@ -2,6 +2,7 @@ package dunghtph30405.example.nhom1_pro1121;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -210,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("Hủy", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                dialog.dismiss();
             }
         });
 
@@ -221,7 +222,10 @@ public class MainActivity extends AppCompatActivity {
                 String mkCu = edt_mkCu.getText().toString().trim();
                 String mkMoi = edt_mkMoi.getText().toString().trim();
                 String nhaplai_mkMoi = edt_nhapLai_mkMoi.getText().toString().trim();
-
+                if ( mkCu.isEmpty() || mkMoi.isEmpty() || nhaplai_mkMoi.isEmpty() ) {
+                    Toast.makeText(MainActivity.this, "Nhập đủ thông tin", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (mkCu.isEmpty() || nhaplai_mkMoi.isEmpty()) {
                     Toast.makeText(MainActivity.this, "Nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                 } else if (!validate_matkhau(mkMoi)) {
@@ -238,10 +242,11 @@ public class MainActivity extends AppCompatActivity {
                     boolean check = accountDAO.capNhatMatKhau(email, mkCu, mkMoi);
                     if (check) {
                         Toast.makeText(MainActivity.this, "Đổi mk thành công", Toast.LENGTH_SHORT).show();
-                        finish();
+                        dialog.dismiss();
 
                     } else {
                         Toast.makeText(MainActivity.this, "Đổi mk thất bại", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
                     }
 
                 } else {
@@ -279,7 +284,11 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                finish();
+//                finish();
+                Intent intent = new Intent(MainActivity.this, Welcome.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+
                 Toast.makeText(MainActivity.this, "Đã đăng xuất", Toast.LENGTH_SHORT).show();
             }
         });

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -116,10 +117,12 @@ public class AccountDAO {
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM ACCOUNT WHERE email = ? AND matkhau = ? ",
                 new String[]{email, matkhauCu});
+        Log.d("DEBUG", "Số lượng tài khoản tìm thấy: " + cursor.getCount());
         if (cursor.getCount() > 0) {
             ContentValues contentValues = new ContentValues();
             contentValues.put("matkhau", matkhauMoi);
             long check = sqLiteDatabase.update("ACCOUNT", contentValues, "email = ?", new String[]{email});
+            Log.d("DEBUG", "Kết quả update: " + check);
             cursor.close();
             if (check == -1) {
                 return false;

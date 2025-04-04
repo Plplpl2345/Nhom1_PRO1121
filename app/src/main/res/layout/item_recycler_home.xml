@@ -2,11 +2,10 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:paddingVertical="10dp"
-    android:layout_height="wrap_content">
-
+    android:paddingVertical="10dp">
 
     <LinearLayout
         android:background="@drawable/custom"
@@ -15,12 +14,13 @@
         android:padding="10dp"
         android:gravity="center"
         android:layout_height="wrap_content">
-        <ImageView
-            android:layout_width="155dp"
-            android:layout_height="100dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/laptop_mau"/>
 
+        <ImageView
+        android:id="@+id/img_sanpham_home"
+        android:layout_width="155dp"
+        android:layout_height="100dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/laptop_mau" />
 
         <LinearLayout
             android:orientation="vertical"
@@ -32,26 +32,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tên Sản Phẩm"
+                android:textSize="14sp" /> <!-- Sửa dp thành sp cho text -->
 
-                android:textSize="14dp"/>
             <TextView
                 android:id="@+id/txt_giasp_home"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Giá Sản Phẩm"
                 android:textColor="#F44336"
-                android:textSize="14dp"/>
+                android:textSize="14sp" />
+
             <TextView
                 android:id="@+id/txt_xemthem_home"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/xemthem"
-                android:textSize="14dp"/>
+                android:textSize="14sp" />
 
         </LinearLayout>
-
-
-
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_giohang_home"
@@ -60,10 +58,7 @@
             android:background="#E88364"
             android:layout_marginTop="10dp"
             android:text="ADD TO CART"
-            android:textColor="@color/white"/>
-
+            android:textColor="@color/white" />
 
     </LinearLayout>
-
-
 </LinearLayout>
