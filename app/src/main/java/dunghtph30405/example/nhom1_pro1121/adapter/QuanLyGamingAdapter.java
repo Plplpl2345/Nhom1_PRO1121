@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,7 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.w3c.dom.Text;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -33,7 +34,7 @@ public class QuanLyGamingAdapter extends RecyclerView.Adapter<QuanLyGamingAdapte
     public QuanLyGamingAdapter(Context context, ArrayList<sanpham> list, SanPhamDAO sanPhamDAO) {
         this.context = context;
         this.list = list;
-        this.fullList = new ArrayList<>(list);  // Create a full copy of the original list
+        this.fullList = new ArrayList<>(list);
         this.sanPhamDAO = sanPhamDAO;
     }
 
@@ -51,48 +52,34 @@ public class QuanLyGamingAdapter extends RecyclerView.Adapter<QuanLyGamingAdapte
         holder.txt_tensp.setText(product.getTensp());
         holder.txt_gia.setText("Giá: " + Amount.moneyFormat(product.getGia()));
 
-        holder.txt_xemthem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showdialogXemThem(product);
-            }
+        // Load image using Glide if available
+        if (product.getHinhanh() != null && !product.getHinhanh().isEmpty()) {
+            Glide.with(context)
+                    .load(product.getHinhanh())
+                    .into(holder.img_anhsp_home_ql);
+        }
+
+        holder.txt_xemthem.setOnClickListener(view -> showdialogXemThem(product));
+
+        holder.btn_delete.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setIcon(R.drawable.canhbao);
+            builder.setMessage("Bạn chắc chắn muốn xóa?");
+            builder.setPositiveButton("YES", (dialog, which) -> {
+                boolean check = sanPhamDAO.deleteGAM(product.getMasp());
+                if (check) {
+                    loadData();
+                    Toast.makeText(context, "Xóa thành công", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Xóa thất bại", Toast.LENGTH_SHORT).show();
+                }
+            });
+            builder.setNegativeButton("NO", (dialog, which) ->
+                    Toast.makeText(context, "Không xóa", Toast.LENGTH_SHORT).show());
+            builder.create().show();
         });
 
-        holder.btn_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setIcon(R.drawable.canhbao);
-                builder.setMessage("Bạn chắc chắn muốn xóa");
-                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        boolean check = sanPhamDAO.deleteGAM(product.getMasp());
-                        if (check) {
-                            loadData();
-                            Toast.makeText(context, "Xóa thành công", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(context, "Xóa thất bại", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(context, "Không xóa", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
-        });
-
-        holder.btn_update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogUpdate(product);
-            }
-        });
+        holder.btn_update.setOnClickListener(view -> dialogUpdate(product));
     }
 
     @Override
@@ -105,7 +92,7 @@ public class QuanLyGamingAdapter extends RecyclerView.Adapter<QuanLyGamingAdapte
         list.clear();
 
         if (query.isEmpty()) {
-            list.addAll(fullList);  // Sử dụng fullList để lấy tất cả các sản phẩm
+            list.addAll(fullList);
         } else {
             for (sanpham sp : fullList) {
                 if (sp.getTensp().toLowerCase().contains(query)) {
@@ -113,17 +100,17 @@ public class QuanLyGamingAdapter extends RecyclerView.Adapter<QuanLyGamingAdapte
                 }
             }
         }
-        notifyDataSetChanged();  // Cập nhật lại giao diện người dùng
+        notifyDataSetChanged();
     }
-
-
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView txt_tensp, txt_gia, txt_xemthem;
         Button btn_delete, btn_update;
+        ImageView img_anhsp_home_ql;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            img_anhsp_home_ql = itemView.findViewById(R.id.img_anhsp_home_ql);
             txt_tensp = itemView.findViewById(R.id.txt_tensp_home_ql);
             txt_gia = itemView.findViewById(R.id.txt_giasp_home_ql);
             txt_xemthem = itemView.findViewById(R.id.txt_xemthem_home_ql);
@@ -132,24 +119,21 @@ public class QuanLyGamingAdapter extends RecyclerView.Adapter<QuanLyGamingAdapte
         }
     }
 
-    // Your dialog methods here...
-
     public void loadData() {
         list.clear();
-        list.addAll(sanPhamDAO.selectGAMING());  // Lấy danh sách sản phẩm mới từ cơ sở dữ liệu
-        fullList = new ArrayList<>(list);  // Cập nhật fullList
+        list.addAll(sanPhamDAO.selectGAMING());
+        fullList = new ArrayList<>(list);
         notifyDataSetChanged();
     }
 
-
-
-    private void showdialogXemThem(sanpham sanPham){
+    private void showdialogXemThem(sanpham sanPham) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater layoutInflater = ((Activity)context).getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.item_chitiet_sanpham, null);
         builder.setView(view);
 
-        //ánh xạ
+        // Initialize views
+        ImageView img_anhsp_chitiet = view.findViewById(R.id.img_anhsp_chitiet);
         TextView txt_tensp_chitiet = view.findViewById(R.id.txt_tensp_chitiet);
         TextView txt_giasp_chitiet = view.findViewById(R.id.txt_giasp_chitiet);
         TextView txt_thuonghieu_chtiet = view.findViewById(R.id.txt_thuonghieu_chtiet);
@@ -167,11 +151,10 @@ public class QuanLyGamingAdapter extends RecyclerView.Adapter<QuanLyGamingAdapte
         TextView tocdoCPU_chitiet = view.findViewById(R.id.tocdoCPU_chitiet);
         TextView txt_vantay_chitiet = view.findViewById(R.id.txt_vantay_chitiet);
 
-
-        //code
+        // Set data
+        Glide.with(context).load(sanPham.getHinhanh()).centerCrop().into(img_anhsp_chitiet);
         txt_tensp_chitiet.setText("Tên: " + sanPham.getTensp());
-        txt_giasp_chitiet.setText("Giá: " + Amount.moneyFormat(sanPham.getGia())
-        );
+        txt_giasp_chitiet.setText("Giá: " + Amount.moneyFormat(sanPham.getGia()));
         txt_thuonghieu_chtiet.setText("Thương hiệu: " + sanPham.getThuonghieu());
         txt_xuatxu_chtiet.setText("Xuất xứ: " + sanPham.getXuatxu());
         txt_kichthuoc_chitiet.setText("Kích thước: " + sanPham.getKichthuocmanhinh());
@@ -187,26 +170,17 @@ public class QuanLyGamingAdapter extends RecyclerView.Adapter<QuanLyGamingAdapte
         tocdoCPU_chitiet.setText("Tốc độ: " + sanPham.getTocdocpu());
         txt_vantay_chitiet.setText("Vân tay: " + sanPham.getVantay());
 
-
-        builder.setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-
+        builder.setPositiveButton("Đóng", (dialog, which) -> {});
+        builder.create().show();
     }
 
-    public void dialogUpdate(sanpham sp){
+    public void dialogUpdate(sanpham sp) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater layoutInflater = ((Activity)context).getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.item_update_sanpham, null);
         builder.setView(view);
 
-        //
+        // Initialize views
         EditText edt_tensp_ud = view.findViewById(R.id.edt_tensp_ud);
         EditText edt_giasp_ud = view.findViewById(R.id.edt_giasp_ud);
         EditText edt_thuonghieu_ud = view.findViewById(R.id.edt_thuonghieu_ud);
@@ -223,9 +197,9 @@ public class QuanLyGamingAdapter extends RecyclerView.Adapter<QuanLyGamingAdapte
         EditText edt_tocdocpu_ud = view.findViewById(R.id.edt_tocdocpu_ud);
         EditText edt_congusb_ud = view.findViewById(R.id.edt_congusb_ud);
         EditText edt_vantay_ud = view.findViewById(R.id.edt_vantay_ud);
+        EditText edt_hinhanh_ud = view.findViewById(R.id.edt_hinhanh_ud); // Added missing field
 
-
-        //
+        // Set initial values
         edt_tensp_ud.setText(sp.getTensp());
         edt_giasp_ud.setText(String.valueOf(sp.getGia()));
         edt_thuonghieu_ud.setText(sp.getThuonghieu());
@@ -242,12 +216,10 @@ public class QuanLyGamingAdapter extends RecyclerView.Adapter<QuanLyGamingAdapte
         edt_tocdocpu_ud.setText(sp.getTocdocpu());
         edt_congusb_ud.setText(sp.getCongusb());
         edt_vantay_ud.setText(sp.getVantay());
+        edt_hinhanh_ud.setText(sp.getHinhanh());
 
-
-        //
-        builder.setNegativeButton("Cập Nhật", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setNegativeButton("Cập Nhật", (dialog, which) -> {
+            try {
                 String tensp_ud = edt_tensp_ud.getText().toString();
                 int giasp_ud = Integer.parseInt(edt_giasp_ud.getText().toString());
                 String thuonghieu_ud = edt_thuonghieu_ud.getText().toString();
@@ -264,40 +236,35 @@ public class QuanLyGamingAdapter extends RecyclerView.Adapter<QuanLyGamingAdapte
                 String tocdocpu_ud = edt_tocdocpu_ud.getText().toString();
                 String congusb_ud = edt_congusb_ud.getText().toString();
                 String vantay_ud = edt_vantay_ud.getText().toString();
+                String hinhanh_ud = edt_hinhanh_ud.getText().toString();
                 int masp = sp.getMasp();
 
-
-
-                if (tensp_ud.isEmpty() || String.valueOf(giasp_ud).isEmpty() || thuonghieu_ud.isEmpty() || xuatxu_ud.isEmpty() || kichthuocmanhinh_ud.isEmpty() || mausac_ud.isEmpty() || trongluong_ud.isEmpty() || chatlieu_ud.isEmpty() || cpu_ud.isEmpty() || ocung_ud.isEmpty() || ram_ud.isEmpty() || rom_ud.isEmpty() || card_ud.isEmpty() || tocdocpu_ud.isEmpty() || congusb_ud.isEmpty() || vantay_ud.isEmpty()){
-
+                if (tensp_ud.isEmpty() || thuonghieu_ud.isEmpty() || xuatxu_ud.isEmpty() ||
+                        kichthuocmanhinh_ud.isEmpty() || mausac_ud.isEmpty() || trongluong_ud.isEmpty() ||
+                        chatlieu_ud.isEmpty() || cpu_ud.isEmpty() || ocung_ud.isEmpty() ||
+                        ram_ud.isEmpty() || rom_ud.isEmpty() || card_ud.isEmpty() ||
+                        tocdocpu_ud.isEmpty() || congusb_ud.isEmpty() || vantay_ud.isEmpty() ||
+                        hinhanh_ud.isEmpty()) {
                     Toast.makeText(context, "Không được để trống dữ liệu", Toast.LENGTH_SHORT).show();
+                } else {
+                    boolean check = sanPhamDAO.updateGAM(masp, tensp_ud, giasp_ud, thuonghieu_ud,
+                            xuatxu_ud, kichthuocmanhinh_ud, mausac_ud, trongluong_ud, chatlieu_ud,
+                            cpu_ud, ocung_ud, ram_ud, rom_ud, card_ud, tocdocpu_ud, congusb_ud,
+                            vantay_ud, hinhanh_ud);
 
-                }else {
-
-                    boolean check = sanPhamDAO.updateGAM(masp, tensp_ud,giasp_ud,thuonghieu_ud, xuatxu_ud, kichthuocmanhinh_ud, mausac_ud, trongluong_ud, chatlieu_ud, cpu_ud,ocung_ud,ram_ud, rom_ud,card_ud, tocdocpu_ud,congusb_ud,vantay_ud );
-                    if (check){
+                    if (check) {
                         Toast.makeText(context, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                         loadData();
-                    }else {
+                    } else {
                         Toast.makeText(context, "Cập nhật không thành công", Toast.LENGTH_SHORT).show();
                     }
                 }
-
-
-
+            } catch (NumberFormatException e) {
+                Toast.makeText(context, "Giá phải là số", Toast.LENGTH_SHORT).show();
             }
         });
 
-        //
-        builder.setPositiveButton("Hủy", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        builder.setPositiveButton("Hủy", (dialog, which) -> {});
+        builder.create().show();
     }
-
 }

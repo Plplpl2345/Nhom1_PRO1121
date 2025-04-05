@@ -18,11 +18,12 @@ public class sanpham {
     private String tocdocpu;
     private String congusb;
     private String vantay;
+    private String hinhanh;
 
     public sanpham() {
     }
 
-    public sanpham(int masp, String tensp, int gia, String thuonghieu, String xuatxu, String kichthuocmanhinh, String mausac, String trongluong, String chatlieu, String cpu, String ocung, String ram, String rom, String card, String tocdocpu, String congusb, String vantay) {
+    public sanpham(int masp, String tensp, int gia, String thuonghieu, String xuatxu, String kichthuocmanhinh, String mausac, String trongluong, String chatlieu, String cpu, String ocung, String ram, String rom, String card, String tocdocpu, String congusb, String vantay, String hinhanh) {
         this.masp = masp;
         this.tensp = tensp;
         this.gia = gia;
@@ -41,6 +42,7 @@ public class sanpham {
         this.congusb = congusb;
         this.vantay = vantay;
 //        this.id_ac = ic_ac;
+        this.hinhanh = hinhanh;
     }
 
 //    public int getId_ac() {
@@ -186,6 +188,13 @@ public class sanpham {
     public void setVantay(String vantay) {
         this.vantay = vantay;
     }
+    public String getHinhanh() {
+        return hinhanh;
+    }
+
+    public void setHinhanh(String hinhanh) {
+        this.hinhanh = hinhanh;
+    }
 
 
     public String tostring() {
@@ -207,6 +216,7 @@ public class sanpham {
                 ", tocdocpu='" + tocdocpu + '\'' +
                 ", congusb='" + congusb + '\'' +
                 ", vantay='" + vantay + '\'' +
+                ", hinhanh='" + hinhanh + '\'' +
                 '}';
     }
 }

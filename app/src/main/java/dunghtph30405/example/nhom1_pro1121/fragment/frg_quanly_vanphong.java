@@ -26,74 +26,59 @@ import dunghtph30405.example.nhom1_pro1121.model.sanpham;
 public class frg_quanly_vanphong extends Fragment {
     SanPhamDAO sanPhamDAO;
     ArrayList<sanpham> list;
-    ArrayList<sanpham> list1;
-
     QuanLyVanPhongAdapter quanLyVanPhongAdapter;
     RecyclerView recyclerQuanliSP;
-
-
 
     public frg_quanly_vanphong() {
         // Required empty public constructor
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.frg_quanly_vanphong, container, false);
+        View view = inflater.inflate(R.layout.frg_quanly_vanphong, container, false);
         FloatingActionButton float_add_vanPhong = view.findViewById(R.id.float_add_vanPhong);
-
         recyclerQuanliSP = view.findViewById(R.id.recyclerView_quanli_vanPhong);
         SearchView searchView = view.findViewById(R.id.search_quanly_vanPhong);
 
+        // Initialize DAO and load data
+        sanPhamDAO = new SanPhamDAO(getContext());
         loadData();
-//tìm kiếm
-        list1 = sanPhamDAO.selectGAMING();
+
+        // Search functionality
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
+                quanLyVanPhongAdapter.filterList(query);
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                list.clear();
-                for (sanpham tv : list1 ) {
-                    if (String.valueOf(tv.getTensp()).contains(newText) || String.valueOf(tv.getGia()).contains(newText) ){
-                        list.add(tv);
-                    }
-                    quanLyVanPhongAdapter.notifyDataSetChanged();
-                }
-                return false;
+                quanLyVanPhongAdapter.filterList(newText);
+                return true;
             }
         });
 
+        // Add new product button
+        float_add_vanPhong.setOnClickListener(v -> showdialogThem());
 
-        float_add_vanPhong.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showdialogThem();
-            }
-        });
         return view;
     }
 
-    public void showdialogThem(){
+    public void showdialogThem() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.item_add_sanpham, null);
         builder.setView(view);
 
-
-        //
+        // Initialize EditText fields
         EditText edt_tensp_add = view.findViewById(R.id.edt_tensp_add);
         EditText edt_giasp_add = view.findViewById(R.id.edt_giasp_add);
         EditText edt_thuonghieu_add = view.findViewById(R.id.edt_thuonghieu_add);
@@ -110,17 +95,12 @@ public class frg_quanly_vanphong extends Fragment {
         EditText edt_tocdocpu_add = view.findViewById(R.id.edt_tocdocpu_add);
         EditText edt_congusb_add = view.findViewById(R.id.edt_congusb_add);
         EditText edt_vantay_add = view.findViewById(R.id.edt_vantay_add);
+        EditText edt_hinhanh_add = view.findViewById(R.id.edt_hinhanh_add); // Added image field
 
-        builder.setPositiveButton("Hủy", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setPositiveButton("Hủy", (dialog, which) -> {});
 
-            }
-        });
-
-        builder.setNegativeButton("Thêm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setNegativeButton("Thêm", (dialog, which) -> {
+            try {
                 String tensp_add = edt_tensp_add.getText().toString();
                 String giasp_add = edt_giasp_add.getText().toString();
                 String thuonghieu_add = edt_thuonghieu_add.getText().toString();
@@ -137,37 +117,44 @@ public class frg_quanly_vanphong extends Fragment {
                 String tocdocpu_add = edt_tocdocpu_add.getText().toString();
                 String congusb_add = edt_congusb_add.getText().toString();
                 String vantay_add = edt_vantay_add.getText().toString();
+                String hinhanh_add = edt_hinhanh_add.getText().toString();
 
-
-
-                if ( tensp_add.isEmpty() || giasp_add.isEmpty()  || thuonghieu_add.isEmpty() || xuatxu_add.isEmpty() || kichthuocmanhinh_add.isEmpty() || mausac_add.isEmpty() || trongluong_add.isEmpty() || chatlieu_add.isEmpty() || cpu_add.isEmpty() || ocung_add.isEmpty() || ram_add.isEmpty() || rom_add.isEmpty() || card_add.isEmpty() || tocdocpu_add.isEmpty() || congusb_add.isEmpty() || vantay_add.isEmpty()){
-
+                if (tensp_add.isEmpty() || giasp_add.isEmpty() || thuonghieu_add.isEmpty() ||
+                        xuatxu_add.isEmpty() || kichthuocmanhinh_add.isEmpty() || mausac_add.isEmpty() ||
+                        trongluong_add.isEmpty() || chatlieu_add.isEmpty() || cpu_add.isEmpty() ||
+                        ocung_add.isEmpty() || ram_add.isEmpty() || rom_add.isEmpty() ||
+                        card_add.isEmpty() || tocdocpu_add.isEmpty() || congusb_add.isEmpty() ||
+                        vantay_add.isEmpty() || hinhanh_add.isEmpty()) {
                     Toast.makeText(getContext(), "Không được để trống dữ liệu", Toast.LENGTH_SHORT).show();
+                } else {
+                    boolean check = sanPhamDAO.addVP(tensp_add, Integer.parseInt(giasp_add), thuonghieu_add,
+                            xuatxu_add, kichthuocmanhinh_add, mausac_add, trongluong_add, chatlieu_add,
+                            cpu_add, ocung_add, ram_add, rom_add, card_add, tocdocpu_add, congusb_add,
+                            vantay_add, hinhanh_add);
 
-                }else {
-                    boolean check = sanPhamDAO.addVP(tensp_add, Integer.parseInt(giasp_add), thuonghieu_add, xuatxu_add , kichthuocmanhinh_add, mausac_add, trongluong_add, chatlieu_add, cpu_add, ocung_add, ram_add, rom_add, card_add,tocdocpu_add,congusb_add,vantay_add );
-
-                    if (check){
+                    if (check) {
                         Toast.makeText(getContext(), "Thêm thành công", Toast.LENGTH_SHORT).show();
                         loadData();
-
-                    }else {
+                    } else {
                         Toast.makeText(getContext(), "Thêm thất bại", Toast.LENGTH_SHORT).show();
                     }
                 }
+            } catch (NumberFormatException e) {
+                Toast.makeText(getContext(), "Giá phải là số hợp lệ", Toast.LENGTH_SHORT).show();
             }
         });
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
-
     }
 
-    public void loadData(){
-        sanPhamDAO = new SanPhamDAO(getContext());
+    public void loadData() {
+        if (sanPhamDAO == null) {
+            sanPhamDAO = new SanPhamDAO(getContext());
+        }
         list = sanPhamDAO.selectMACBOOK();
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(),2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(), 2);
         recyclerQuanliSP.setLayoutManager(gridLayoutManager);
 
         quanLyVanPhongAdapter = new QuanLyVanPhongAdapter(getContext(), list, sanPhamDAO);
