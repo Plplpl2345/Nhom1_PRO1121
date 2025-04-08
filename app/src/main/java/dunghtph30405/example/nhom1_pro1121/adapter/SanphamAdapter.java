@@ -1,12 +1,12 @@
 package dunghtph30405.example.nhom1_pro1121.adapter;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +15,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 import dunghtph30405.example.nhom1_pro1121.R;
@@ -22,12 +24,10 @@ import dunghtph30405.example.nhom1_pro1121.dao.SanPhamDAO;
 import dunghtph30405.example.nhom1_pro1121.model.sanpham;
 import dunghtph30405.example.nhom1_pro1121.util.Amount;
 
-
 public class SanphamAdapter extends RecyclerView.Adapter<SanphamAdapter.ViewHolder> {
 
     private Context context;
     private ArrayList<sanpham> list;
-
     private SanPhamDAO sanPhamDAO;
     private OnAddToCartClickListener addToCartClickListener;
 
@@ -41,50 +41,46 @@ public class SanphamAdapter extends RecyclerView.Adapter<SanphamAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
         View view = inflater.inflate(R.layout.item_recycler_home, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.txt_tensp.setText(list.get(position).getTensp());
-        holder.txt_gia.setText("Giá: " + Amount.moneyFormat( list.get(position).getGia()));
+        sanpham product = list.get(position);
+        holder.txt_tensp.setText(product.getTensp());
+        holder.txt_gia.setText("Giá: " + Amount.moneyFormat(product.getGia()));
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showdialogXemThem(list.get(holder.getAdapterPosition()));
-            }
-        });
+        // Load image if available
+        if (product.getHinhanh() != null && !product.getHinhanh().isEmpty()) {
+            Glide.with(context)
+                    .load(product.getHinhanh())
+                    .into(holder.img_anhsp_home);
+        }
 
-        holder.btn_giohang.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addToCartClickListener.onAddToCartClick(list.get(holder.getAdapterPosition()));
-            }
-        });
+        // Show product details on item click
+        holder.itemView.setOnClickListener(v -> showdialogXemThem(product));
 
-        holder.btn_giohang.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (sanPhamDAO.addToCart(list.get(holder.getAdapterPosition()))){
-                    Toast.makeText(context, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
-
-                }else {
-                    Toast.makeText(context, "Them that bai", Toast.LENGTH_SHORT).show();
+        // Handle add to cart button - combined both listeners
+        holder.btn_giohang.setOnClickListener(v -> {
+            boolean success = sanPhamDAO.addToCart(product);
+            if (success) {
+                Toast.makeText(context, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                if (addToCartClickListener != null) {
+                    addToCartClickListener.onAddToCartClick(product);
                 }
+            } else {
+                Toast.makeText(context, "Thêm thất bại", Toast.LENGTH_SHORT).show();
             }
         });
     }
-
-
 
     public void updateData(ArrayList<sanpham> newList) {
         this.list = newList;
         notifyDataSetChanged();
     }
+
     public interface OnAddToCartClickListener {
         void onAddToCartClick(sanpham sanPham);
     }
@@ -94,29 +90,29 @@ public class SanphamAdapter extends RecyclerView.Adapter<SanphamAdapter.ViewHold
         return list.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView txt_tensp, txt_gia, txt_xemthem;
         AppCompatButton btn_giohang;
+        ImageView img_anhsp_home;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             txt_tensp = itemView.findViewById(R.id.txt_tensp_home);
             txt_gia = itemView.findViewById(R.id.txt_giasp_home);
             txt_xemthem = itemView.findViewById(R.id.txt_xemthem_home);
             btn_giohang = itemView.findViewById(R.id.btn_giohang_home);
-
+            img_anhsp_home = itemView.findViewById(R.id.img_sanpham_home);
         }
     }
 
-
-
-    private void showdialogXemThem(sanpham sanPham){
+    private void showdialogXemThem(sanpham sanPham) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        LayoutInflater layoutInflater = ((Activity)context).getLayoutInflater();
+        LayoutInflater layoutInflater = ((Activity) context).getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.item_chitiet_sanpham, null);
         builder.setView(view);
 
-        //ánh xạ
+        // Initialize views
+        ImageView img_anhsp_chitiet = view.findViewById(R.id.img_anhsp_chitiet);
         TextView txt_tensp_chitiet = view.findViewById(R.id.txt_tensp_chitiet);
         TextView txt_giasp_chitiet = view.findViewById(R.id.txt_giasp_chitiet);
         TextView txt_thuonghieu_chtiet = view.findViewById(R.id.txt_thuonghieu_chtiet);
@@ -134,11 +130,10 @@ public class SanphamAdapter extends RecyclerView.Adapter<SanphamAdapter.ViewHold
         TextView tocdoCPU_chitiet = view.findViewById(R.id.tocdoCPU_chitiet);
         TextView txt_vantay_chitiet = view.findViewById(R.id.txt_vantay_chitiet);
 
-
-        //code
+        // Set data
+        Glide.with(context).load(sanPham.getHinhanh()).centerCrop().into(img_anhsp_chitiet);
         txt_tensp_chitiet.setText("Tên: " + sanPham.getTensp());
-        txt_giasp_chitiet.setText("Giá: " + Amount.moneyFormat(sanPham.getGia())
-        );
+        txt_giasp_chitiet.setText("Giá: " + Amount.moneyFormat(sanPham.getGia()));
         txt_thuonghieu_chtiet.setText("Thương hiệu: " + sanPham.getThuonghieu());
         txt_xuatxu_chtiet.setText("Xuất xứ: " + sanPham.getXuatxu());
         txt_kichthuoc_chitiet.setText("Kích thước: " + sanPham.getKichthuocmanhinh());
@@ -154,23 +149,7 @@ public class SanphamAdapter extends RecyclerView.Adapter<SanphamAdapter.ViewHold
         tocdoCPU_chitiet.setText("Tốc độ: " + sanPham.getTocdocpu());
         txt_vantay_chitiet.setText("Vân tay: " + sanPham.getVantay());
 
-
-
-
-
-        builder.setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-
-
-
-
+        builder.setPositiveButton("Đóng", (dialog, which) -> {});
+        builder.create().show();
     }
-
 }

@@ -46,7 +46,8 @@ public class SanPhamDAO {
                         cursor.getString(13),
                         cursor.getString(14),
                         cursor.getString(15),
-                        cursor.getString(16)));
+                        cursor.getString(16),
+                        cursor.getString(17)));
             } while (cursor.moveToNext());
         }
         return list;
@@ -80,7 +81,8 @@ public class SanPhamDAO {
                         cursor.getString(13),
                         cursor.getString(14),
                         cursor.getString(15),
-                        cursor.getString(16)
+                        cursor.getString(16),
+                        cursor.getString(17)
                 );
                 list.add(sp);
 
@@ -121,7 +123,8 @@ public class SanPhamDAO {
                         cursor.getString(13),
                         cursor.getString(14),
                         cursor.getString(15),
-                        cursor.getString(16)
+                        cursor.getString(16),
+                        cursor.getString(17)
                 );
                 list.add(sp);
 
@@ -167,7 +170,7 @@ public class SanPhamDAO {
     }
 
     //update
-    public boolean updateSP(int masp, String tensp, int gia, String thuonghieu, String xuatxu, String kichthuocmanhinh, String mausac, String trongluong, String chatlieu, String cpu, String ocung, String ram, String rom, String card, String tocdocpu, String congusb, String vantay) {
+    public boolean updateSP(int masp, String tensp, int gia, String thuonghieu, String xuatxu, String kichthuocmanhinh, String mausac, String trongluong, String chatlieu, String cpu, String ocung, String ram, String rom, String card, String tocdocpu, String congusb, String vantay, String hinhanh) {
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("tensp", tensp);
@@ -186,6 +189,7 @@ public class SanPhamDAO {
         contentValues.put("tocdocpu", tocdocpu);
         contentValues.put("congusb", congusb);
         contentValues.put("vantay", vantay);
+        contentValues.put("hinhanh", hinhanh);
 
         long check = sqLiteDatabase.update("SANPHAM", contentValues, "masp = ?", new String[]{String.valueOf(masp)});
         if (check == -1) {
@@ -195,7 +199,7 @@ public class SanPhamDAO {
 
     }
 
-    public boolean updateGAM(int masp, String tensp, int gia, String thuonghieu, String xuatxu, String kichthuocmanhinh, String mausac, String trongluong, String chatlieu, String cpu, String ocung, String ram, String rom, String card, String tocdocpu, String congusb, String vantay) {
+    public boolean updateGAM(int masp, String tensp, int gia, String thuonghieu, String xuatxu, String kichthuocmanhinh, String mausac, String trongluong, String chatlieu, String cpu, String ocung, String ram, String rom, String card, String tocdocpu, String congusb, String vantay, String hinhanh) {
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("tensp", tensp);
@@ -214,6 +218,7 @@ public class SanPhamDAO {
         contentValues.put("tocdocpu", tocdocpu);
         contentValues.put("congusb", congusb);
         contentValues.put("vantay", vantay);
+        contentValues.put("hinhanh", hinhanh);
 
         long check = sqLiteDatabase.update("GAMING", contentValues, "masp = ?", new String[]{String.valueOf(masp)});
         if (check == -1) {
@@ -223,7 +228,7 @@ public class SanPhamDAO {
 
     }
 
-    public boolean updateVP(int masp, String tensp, int gia, String thuonghieu, String xuatxu, String kichthuocmanhinh, String mausac, String trongluong, String chatlieu, String cpu, String ocung, String ram, String rom, String card, String tocdocpu, String congusb, String vantay) {
+    public boolean updateVP(int masp, String tensp, int gia, String thuonghieu, String xuatxu, String kichthuocmanhinh, String mausac, String trongluong, String chatlieu, String cpu, String ocung, String ram, String rom, String card, String tocdocpu, String congusb, String vantay, String hinhanh) {
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("tensp", tensp);
@@ -242,6 +247,7 @@ public class SanPhamDAO {
         contentValues.put("tocdocpu", tocdocpu);
         contentValues.put("congusb", congusb);
         contentValues.put("vantay", vantay);
+        contentValues.put("hinhanh", hinhanh);
 
         long check = sqLiteDatabase.update("VANPHONG", contentValues, "masp = ?", new String[]{String.valueOf(masp)});
         if (check == -1) {
@@ -253,7 +259,7 @@ public class SanPhamDAO {
 
 
     //add
-    public boolean addGAM(String tensp, int gia, String thuonghieu, String xuatxu, String kichthuocmanhinh, String mausac, String trongluong, String chatlieu, String cpu, String ocung, String ram, String rom, String card, String tocdocpu, String congusb, String vantay) {
+    public boolean addGAM(String tensp, int gia, String thuonghieu, String xuatxu, String kichthuocmanhinh, String mausac, String trongluong, String chatlieu, String cpu, String ocung, String ram, String rom, String card, String tocdocpu, String congusb, String vantay, String hinhanh) {
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("tensp", tensp);
@@ -272,6 +278,7 @@ public class SanPhamDAO {
         contentValues.put("tocdocpu", tocdocpu);
         contentValues.put("congusb", congusb);
         contentValues.put("vantay", vantay);
+        contentValues.put("hinhanh", hinhanh);
 
         long check = sqLiteDatabase.insert("GAMING", null, contentValues);
         if (check == -1) {
@@ -280,7 +287,8 @@ public class SanPhamDAO {
         return true;
     }
 
-    public boolean addVP(String tensp, int gia, String thuonghieu, String xuatxu, String kichthuocmanhinh, String mausac, String trongluong, String chatlieu, String cpu, String ocung, String ram, String rom, String card, String tocdocpu, String congusb, String vantay) {
+    public boolean addVP(String tensp, int gia, String thuonghieu, String xuatxu, String kichthuocmanhinh, String mausac, String trongluong, String chatlieu, String cpu, String ocung, String ram, String rom, String card, String tocdocpu, String congusb, String vantay, String hinhanh
+    ) {
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("tensp", tensp);
@@ -299,7 +307,7 @@ public class SanPhamDAO {
         contentValues.put("tocdocpu", tocdocpu);
         contentValues.put("congusb", congusb);
         contentValues.put("vantay", vantay);
-
+        contentValues.put("hinhanh", hinhanh);
         long check = sqLiteDatabase.insert("VANPHONG", null, contentValues);
         if (check == -1) {
             return false;
@@ -310,7 +318,7 @@ public class SanPhamDAO {
     public boolean addSP(String tensp, int gia, String thuonghieu, String xuatxu, String kichthuocmanhinh,
                          String mausac, String trongluong, String chatlieu, String cpu, String ocung,
                          String ram, String rom, String card,
-                         String tocdocpu, String congusb, String vantay) {
+                         String tocdocpu, String congusb, String vantay, String hinhanh) {
         SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("tensp", tensp);
@@ -329,6 +337,7 @@ public class SanPhamDAO {
         contentValues.put("tocdocpu", tocdocpu);
         contentValues.put("congusb", congusb);
         contentValues.put("vantay", vantay);
+        contentValues.put("hinhanh", hinhanh);
         long check = sqLiteDatabase.insert("SANPHAM", null, contentValues);
         if (check == -1) {
             return false;
