@@ -55,7 +55,7 @@
             android:id="@+id/btn_giohang_home"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:background="#E88364"
+            android:background="#2E2D2D"
             android:layout_marginTop="10dp"
             android:text="ADD TO CART"
             android:textColor="@color/white" />

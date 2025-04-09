@@ -346,30 +346,35 @@ public class SanPhamDAO {
     }
 
     public Boolean addToCart(sanpham sanPham) {
-        SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        ArrayList<giohang> list = new GioHangDAO(context).listGH();
-        for (int i = 0; i < list.size(); i++) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        GioHangDAO gioHangDAO = new GioHangDAO(context);
+        ArrayList<giohang> list = gioHangDAO.listGH();
 
-            if (list.get(i).getMasp() == sanPham.getMasp() && list.get(i).getTensp().equals(sanPham.getTensp())) {
+        for (giohang item : list) {
+            if (item.getMasp() == sanPham.getMasp() && item.getTensp().equals(sanPham.getTensp())) {
+                ContentValues values = new ContentValues();
                 values.put("TENSP", sanPham.getTensp());
                 values.put("GIA", sanPham.getGia());
-                values.put("SOLUONG", list.get(i).getSoluong() + 1);
+                values.put("SOLUONG", item.getSoluong() + 1);
                 values.put("id_ac", AccountSingle.getInstance().getAccount().getId());
                 values.put("masp", sanPham.getMasp());
-                sqLiteDatabase.update("GIOHANG", values, "tensp =?", new String[]{list.get(i).getTensp()});
 
-                sqLiteDatabase.close();
+                db.update("GIOHANG", values, "tensp = ?", new String[]{sanPham.getTensp()});
+                db.close();
                 return true;
             }
         }
-        values.put("tensp", sanPham.getTensp());
-        values.put("gia", sanPham.getGia());
-        values.put("soluong", 1);
+
+        // Nếu chưa có trong giỏ hàng
+        ContentValues values = new ContentValues();
+        values.put("TENSP", sanPham.getTensp());
+        values.put("GIA", sanPham.getGia());
+        values.put("SOLUONG", 1);
         values.put("id_ac", AccountSingle.getInstance().getAccount().getId());
         values.put("masp", sanPham.getMasp());
-        sqLiteDatabase.insert("GIOHANG", null, values);
-        sqLiteDatabase.close();
+
+        db.insert("GIOHANG", null, values);
+        db.close();
         return true;
     }
 }

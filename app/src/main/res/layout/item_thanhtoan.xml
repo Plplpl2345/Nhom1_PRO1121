@@ -16,7 +16,8 @@
         <ImageView
             android:layout_width="220dp"
             android:layout_height="220dp"
-            android:src="@drawable/img_4"/>
+            android:src="@drawable/img_4"
+            />
 
         <TextView
             android:layout_width="match_parent"
