@@ -12,6 +12,7 @@
         android:layout_height="170dp">
 
         <ImageView
+
             android:layout_margin="10dp"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
